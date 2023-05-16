@@ -62,25 +62,24 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-module.exports.updateUser = (req, res, next) => {
+module.exports.updateUser = async (req, res, next) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name, about },
-    { new: true, runValidators: true },
-  )
-    .then((user) => {
-      if (!user) {
-        next(new CustomError('Такого пользователя нет', StatusCodes.NOT_FOUND));
-      }
-      res.send({ data: user });
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new CustomError('Ошибка запроса', StatusCodes.BAD_REQUEST));
-      }
-      next(err);
-    });
+
+  const userId = req.user._id;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { name, about },
+      { new: true, runValidators: true },
+    );
+    if (!updatedUser) {
+      next(new CustomError('Пользователь не найден', StatusCodes.NOT_FOUND));
+    }
+    res.send(updatedUser);
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports.updateAvatar = (req, res, next) => {

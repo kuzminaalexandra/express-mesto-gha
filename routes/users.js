@@ -5,14 +5,14 @@ const {
 
 const {
   userIdValidate,
-  userInfoValidate,
+  userAboutValidate,
   userAvatarValidate,
 } = require('../middlewares/validate/userValidate');
 
 usersRouter.get('/', getUsers);
 usersRouter.get('/me', getCurrentUserInfo);
 usersRouter.get('/:id', userIdValidate, getUserId);
-usersRouter.patch('/me', userInfoValidate, updateUser);
+usersRouter.patch('/me', userAboutValidate, updateUser);
 usersRouter.patch('/me/avatar', userAvatarValidate, updateAvatar);
 
 module.exports = usersRouter;
