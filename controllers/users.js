@@ -119,7 +119,7 @@ module.exports.login = async (req, res, next) => {
       throw new CustomError('Неверный email или пароль', StatusCodes.UNAUTHORIZED);
     }
 
-    const token = jwt.sign({ _id: user._id }, 'secret', { expiresIn: '7d' });
+    const token = jwt.sign({ _id: user._id }, 'secret1111', { expiresIn: '7d' });
 
     res.cookie('token', token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
     res.status(200).json({ message: 'Успешный вход' });

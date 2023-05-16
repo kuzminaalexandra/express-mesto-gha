@@ -7,7 +7,7 @@ module.exports.auth = (req, res, next) => {
   const token = req.cookies.jwt;
 
   if (!token) {
-    console.log('pizdec');
+    next(new CustomError('Авторизуйтесь!', StatusCodes.UNAUTHORIZED));
   }
 
   try {
