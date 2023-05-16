@@ -10,8 +10,8 @@ const {
 } = require('../middlewares/validate/userValidate');
 
 usersRouter.get('/', getUsers);
-usersRouter.get('/:id', userIdValidate, getUserId);
 usersRouter.get('/me', getCurrentUserInfo);
+usersRouter.get('/:id', userIdValidate, getUserId);
 usersRouter.patch('/me', userInfoValidate, updateUser);
 usersRouter.patch('/me/avatar', userAvatarValidate, updateAvatar);
 
