@@ -134,7 +134,7 @@ module.exports.getCurrentUserInfo = (req, res, next) => {
     if (!user) {
       next(new CustomError('Такого пользователя нет', StatusCodes.NOT_FOUND));
     }
-    return res.json({
+    return res.send({
       name: user.name,
       about: user.about,
       avatar: user.avatar,
