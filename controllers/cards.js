@@ -19,12 +19,21 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
-      if (card) {
-        res.send({ data: card });
+      if (!card) {
+        throw new CustomError('Карточка не найдена', StatusCodes.NOT_FOUND);
+      }
+      if (card.owner.toString() !== req.user._id) {
+        throw new CustomError('У вас нет доступа к удалению этой карточки', StatusCodes.FORBIDDEN);
+      }
+      return Card.findByIdAndRemove(req.params.cardId);
+    })
+    .then((deletedCard) => {
+      if (deletedCard) {
+        res.send({ data: deletedCard });
       } else {
-        next(new CustomError('Карточка не найдена', StatusCodes.NOT_FOUND));
+        throw new CustomError('Карточка не найдена', StatusCodes.NOT_FOUND);
       }
     })
     .catch((err) => {
