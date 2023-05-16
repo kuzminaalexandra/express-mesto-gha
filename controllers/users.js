@@ -128,13 +128,13 @@ module.exports.login = async (req, res, next) => {
   }
 };
 
-module.exports.getCurrentUserInfo = (req, res, next) => {
+module.exports.getCurrentUserInfo = async (req, res, next) => {
   try {
-    const user = User.findById(req.user._id);
+    const user = await User.findById(req.user._id);
     if (!user) {
-      next(new CustomError('Такого пользователя нет', StatusCodes.NOT_FOUND));
+      throw new CustomError('Такого пользователя нет', StatusCodes.NOT_FOUND);
     }
-    return res.send({
+    res.send({
       name: user.name,
       about: user.about,
       avatar: user.avatar,
@@ -142,6 +142,6 @@ module.exports.getCurrentUserInfo = (req, res, next) => {
       email: user.email,
     });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 };
