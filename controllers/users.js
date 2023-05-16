@@ -36,7 +36,13 @@ module.exports.createUser = (req, res, next) => {
     email, password, name, about, avatar,
   } = req.body;
 
-  bcrypt.hash(password, 15)
+  User.findOne({ email })
+    .then((existingUser) => {
+      if (existingUser) {
+        throw new CustomError('Такой email уже зарегистрирован', StatusCodes.CONFLICT);
+      }
+      return bcrypt.hash(password, 15);
+    })
     .then((hash) => User.create({
       email,
       password: hash,
@@ -44,7 +50,10 @@ module.exports.createUser = (req, res, next) => {
       about,
       avatar,
     }))
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      const { password: hashedPassword, ...userData } = user.toObject();
+      res.send({ data: userData });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new CustomError('Ошибка запроса', StatusCodes.BAD_REQUEST));
