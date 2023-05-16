@@ -104,18 +104,21 @@ module.exports.updateAvatar = (req, res, next) => {
     });
 };
 
-module.exports.login = (req, res, next) => {
+module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const user = User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
-      next(new CustomError('Неверный email или пароль', StatusCodes.UNAUTHORIZED));
+      throw new CustomError('Неверный email или пароль', StatusCodes.UNAUTHORIZED);
     }
-    const passwordMatch = bcrypt.compare(password, user.password);
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
     if (!passwordMatch) {
-      next(new CustomError('Неверный email или пароль', StatusCodes.UNAUTHORIZED));
+      throw new CustomError('Неверный email или пароль', StatusCodes.UNAUTHORIZED);
     }
+
     const token = jwt.sign({ _id: user._id }, 'secret', { expiresIn: '7d' });
 
     res.cookie('token', token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
