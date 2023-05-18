@@ -18,10 +18,6 @@ module.exports.auth = (req, res, next) => {
     return next(new CustomError('Необходима авторизация', StatusCodes.UNAUTHORIZED));
   }
 
-  if (!payload) {
-    return next(new CustomError('Необходима авторизация', StatusCodes.UNAUTHORIZED));
-  }
-
   req.user = payload;
 
   return next();
