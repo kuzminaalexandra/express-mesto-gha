@@ -53,10 +53,11 @@ module.exports.likeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      if (!card) {
+      if (card) {
+        res.send({ data: card });
+      } else {
         next(new CustomError('Карточка не найдена', StatusCodes.NOT_FOUND));
       }
-      res.send({ data: card });
     })
     .catch((err) => next(err));
 };
@@ -69,10 +70,11 @@ module.exports.dislikeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      if (!card) {
+      if (card) {
+        res.send({ data: card });
+      } else {
         next(new CustomError('Карточка не найдена', StatusCodes.NOT_FOUND));
       }
-      res.send({ data: card });
     })
     .catch((err) => next(err));
 };
