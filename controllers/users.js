@@ -26,8 +26,8 @@ module.exports.getUserId = (req, res, next) => {
         next(new CustomError('Такого пользователя нет', StatusCodes.NOT_FOUND));
       }
     })
-    .catch(() => {
-      next(new CustomError('Ошибка запроса', StatusCodes.BAD_REQUEST));
+    .catch((err) => {
+      next(err);
     });
 };
 
@@ -55,9 +55,6 @@ module.exports.createUser = (req, res, next) => {
       res.send({ data: userData });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new CustomError('Ошибка запроса', StatusCodes.BAD_REQUEST));
-      }
       next(err);
     });
 };
@@ -76,9 +73,6 @@ module.exports.updateUser = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new CustomError('Ошибка запроса', StatusCodes.BAD_REQUEST));
-      }
       next(err);
     });
 };
@@ -97,9 +91,6 @@ module.exports.updateAvatar = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new CustomError('Такого пользователя нет', StatusCodes.NOT_FOUND));
-      }
       next(err);
     });
 };
