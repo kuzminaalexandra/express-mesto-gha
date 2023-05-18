@@ -47,42 +47,32 @@ module.exports.deleteCard = (req, res, next) => {
 
 module.exports.likeCard = (req, res, next) => {
   const userId = req.user._id;
-  Card.findById(req.params.cardId)
-    .then((foundCard) => {
-      if (foundCard) {
-        Card.findByIdAndUpdate(
-          req.params.cardId,
-          { $addToSet: { likes: userId } },
-          { new: true },
-        )
-          .then((card) => {
-            res.send({ data: card });
-          })
-          .catch((err) => next(err));
-      } else {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: userId } },
+    { new: true },
+  )
+    .then((card) => {
+      if (!card) {
         next(new CustomError('Карточка не найдена', StatusCodes.NOT_FOUND));
       }
+      res.send({ data: card });
     })
     .catch((err) => next(err));
 };
 
 module.exports.dislikeCard = (req, res, next) => {
   const userId = req.user._id;
-  Card.findById(req.params.cardId)
-    .then((foundCard) => {
-      if (foundCard) {
-        Card.findByIdAndUpdate(
-          req.params.cardId,
-          { $pull: { likes: userId } },
-          { new: true },
-        )
-          .then((card) => {
-            res.send({ data: card });
-          })
-          .catch((err) => next(err));
-      } else {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: userId } },
+    { new: true },
+  )
+    .then((card) => {
+      if (!card) {
         next(new CustomError('Карточка не найдена', StatusCodes.NOT_FOUND));
       }
+      res.send({ data: card });
     })
     .catch((err) => next(err));
 };
