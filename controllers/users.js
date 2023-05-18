@@ -36,13 +36,7 @@ module.exports.createUser = (req, res, next) => {
     email, password, name, about, avatar,
   } = req.body;
 
-  User.findOne({ email })
-    .then((existingUser) => {
-      if (existingUser) {
-        throw new CustomError('Такой email уже зарегистрирован', StatusCodes.CONFLICT);
-      }
-      return bcrypt.hash(password, 15);
-    })
+  bcrypt.hash(password, 15)
     .then((hash) => User.create({
       email,
       password: hash,
@@ -55,7 +49,11 @@ module.exports.createUser = (req, res, next) => {
       res.send({ data: userData });
     })
     .catch((err) => {
-      next(err);
+      if (err.code === 11000) {
+        next(new CustomError('пользователь уже зарегистрирован', StatusCodes.CONFLICT));
+      } else {
+        next(err);
+      }
     });
 };
 
