@@ -14,17 +14,13 @@ module.exports.getUsers = (req, res, next) => {
 
 module.exports.getUserId = (req, res, next) => {
   const userId = req.params.id;
-  User.exists({ _id: userId })
-    .then((exists) => {
-      if (exists) {
-        User.findById(userId)
-          .then((user) => {
-            res.status(200).send({ data: user });
-          })
-          .catch((err) => next(err));
-      } else {
-        next(new CustomError('Такого пользователя нет', StatusCodes.NOT_FOUND));
+
+  User.findById(userId)
+    .then((user) => {
+      if (!user) {
+        throw new CustomError('Такого пользователя нет', StatusCodes.NOT_FOUND);
       }
+      res.status(200).send({ data: user });
     })
     .catch((err) => {
       next(err);
@@ -84,7 +80,7 @@ module.exports.updateAvatar = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        next(new CustomError('Пользователь не найден', StatusCodes.NOT_FOUND));
       }
       res.send({ data: user });
     })
